@@ -19,7 +19,8 @@ numpy
 5. opencv-python (OpenCV is used to read, process and display images)
 6. easyocr (Use EasyOCR to read text on license plates)
 
-• Detection license\*plate_recognition_symbols
+• Detection license_plate_recognition_symbols
+
 Preprocess.py:
 
 ![alt text](imgGrayscalePlusTopHatMinusBlackHat.jpg)
@@ -30,16 +31,19 @@ Preprocess.py:
 
 ![alt text](Gaussian.jpg)
 
-Original img:
+Original img: with eacyocr
 ![alt text](<Running_YOLOv8_Webcam/detection_by_picture/ảnh Chuẩn/1.jpg>)
 
 Start detection
 Color img :
 ![alt text](Color.png)
+
 Black and White:
 ![alt text](BlackWhite.png)
+
 Canny Edge Detection:
 ![alt text](Canny.png)
+
 Find and Draw Contours:
 ![alt text](Contours.png)
 
