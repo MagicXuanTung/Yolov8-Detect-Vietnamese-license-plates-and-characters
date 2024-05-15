@@ -20,9 +20,7 @@ pip install -r requirements.txt
 6. easyocr (Use EasyOCR to read text on license plates)
 
 • Detection license*plate_recognition_symbols
-• Detection distance_measure* object:
-• Detection traffic_sign
-• Detection speed_limit
+
 
 ![Alt text](yolo-comparison-plots.png)
 ![Alt text](<Screenshot 2024-01-22 10343.png>)
