@@ -5,4 +5,4 @@ v3: biến đổi ảnh đen trắng có sử dụng drawContours
 v4: khoanh vùng ký tự nhận diện : 0123456789ABCDEFGHKLMNPSTUVXYZ
 v5: tăng khả năng nhận diện từ easyOCR ( cho biển 1 dòng và 2 dòng)
 v6: thêm thuật toán Canny
-v7: thêm thuật toán contour
+v7: thêm thuật toán Contour
