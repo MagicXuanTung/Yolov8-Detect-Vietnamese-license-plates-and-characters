@@ -25,29 +25,29 @@ Preprocess.py:
 
 ![alt text](imgGrayscalePlusTopHatMinusBlackHat.jpg)
 
-![alt text](BlackHat.jpg)
-
-![alt text](TopHat.jpg)
-
-![alt text](Gaussian.jpg)
-
 Original img: with eacyocr
+
 ![alt text](<Running_YOLOv8_Webcam/detection_by_picture/ảnh Chuẩn/1.jpg>)
 
 Start detection
 Color img :
+
 ![alt text](Color.png)
 
 Black and White:
+
 ![alt text](BlackWhite.png)
 
 Canny Edge Detection:
+
 ![alt text](Canny.png)
 
 Find and Draw Contours:
+
 ![alt text](Contours.png)
 
 Font text License plate Vietnamese:
+
 [text](Soxe2banh.TTF)
 ![alt text](font_vn.png)
 
