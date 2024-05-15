@@ -53,4 +53,5 @@ Font text License plate Vietnamese:
 
 Bonus:  
 You can delete all img in \input_images_license_plate , and replace your img in folder
-rename_img.py in folder \img_input_rename , replace you input \_path and output_path to rename img to manage it name like number 1.jpg
+
+File rename_img.py in folder \img_input_rename , replace you input \_path and output_path to rename img to manage it name like number 1.jpg
