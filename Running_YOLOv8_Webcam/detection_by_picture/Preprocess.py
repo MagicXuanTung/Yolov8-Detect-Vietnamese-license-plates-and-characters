@@ -13,7 +13,8 @@ ADAPTIVE_THRESH_WEIGHT = 9
 def preprocess(imgOriginal):
 
     imgGrayscale = extractValue(imgOriginal)
-    # imgGrayscale = cv2.cvtColor(imgOriginal,cv2.COLOR_BGR2GRAY) nên dùng hệ màu HSV
+    imgGrayscale = cv2.cvtColor(imgOriginal,cv2.COLOR_BGR2GRAY) 
+    # nên dùng hệ màu HSV
     # Trả về giá trị cường độ sáng ==> ảnh gray
     imgMaxContrastGrayscale = maximizeContrast(imgGrayscale) #để làm nổi bật biển số hơn, dễ tách khỏi nền
     #cv2.imwrite("imgGrayscalePlusTopHatMinusBlackHat.jpg",imgMaxContrastGrayscale)
@@ -64,7 +65,6 @@ def maximizeContrast(imgGrayscale):
     #Kết quả cuối là ảnh đã tăng độ tương phản 
     return imgGrayscalePlusTopHatMinusBlackHat
 # end function
-
 
 
 

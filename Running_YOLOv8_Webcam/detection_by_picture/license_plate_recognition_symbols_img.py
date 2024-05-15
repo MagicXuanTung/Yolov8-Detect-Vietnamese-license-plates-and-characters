@@ -4,10 +4,11 @@ import easyocr
 import os
 
 # Update the path to your YOLO license plate detection model
-model_yolo = YOLO("../YOLO-Weights/license_plate_detector.pt")
+model_yolo = YOLO("../YOLO-Weights/best.pt")
 
 # Update class name for license plate
-classNames = ["license_plate"]
+classNames = {0: '0', 1: '1', 2: '2', 3: '3', 4: '4', 5: '5', 6: '6', 7: '7', 8: '8', 9: '9', 10: 'A', 11: 'B', 12: 'C', 13: 'D', 14: 'E', 15: 'F',
+              16: 'G', 17: 'H', 18: 'J', 19: 'K', 20: 'L', 21: 'M', 22: 'N', 23: 'P', 24: 'R', 25: 'S', 26: 'T', 27: 'U', 28: 'V', 29: 'X', 30: 'Y', 31: 'Z'}
 
 # Initialize EasyOCR with the desired language (replace 'en' with the appropriate language code)
 reader = easyocr.Reader(['vi'])
@@ -36,7 +37,8 @@ for image_filename in os.listdir(image_directory):
             # Check if the detected object is a license plate
             cls = int(box.cls[0])
             if classNames[cls] == "license_plate":
-                color = (255, 0, 255)  # Magenta color for both bounding box and text
+                # Magenta color for both bounding box and text
+                color = (255, 0, 255)
 
                 cv2.rectangle(img, (x1, y1), (x2, y2), color, 3)
 
@@ -48,7 +50,8 @@ for image_filename in os.listdir(image_directory):
 
                 if results_ocr:
                     # Concatenate lines of the license plate text into a single string
-                    license_plate_text = ' '.join(result[1] for result in results_ocr)
+                    license_plate_text = ' '.join(
+                        result[1] for result in results_ocr)
 
                     # Display the entire license plate text on a single line
                     cv2.putText(img, f'License Plate: {license_plate_text}', (x1, y1 - 20),
@@ -59,8 +62,8 @@ for image_filename in os.listdir(image_directory):
     cv2.waitKey(0)
 
     # Save the image with license plate information
-    output_filename = os.path.join(output_directory, f'{image_filename}_output.jpg')
+    output_filename = os.path.join(
+        output_directory, f'{image_filename}_output.jpg')
     cv2.imwrite(output_filename, img)
 
 cv2.destroyAllWindows()
-

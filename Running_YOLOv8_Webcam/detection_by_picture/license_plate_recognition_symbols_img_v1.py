@@ -20,7 +20,7 @@ output_directory = "./Running_YOLOv8_Webcam/detection_by_picture/output_images_p
 os.makedirs(output_directory, exist_ok=True)
 
 # Output directory for saving cropped images
-cropped_output_directory = "./Running_YOLOv8_Webcam/detection_by_picture/output_cropped_images_plates"
+cropped_output_directory = "./Running_YOLOv8_Webcam/detection_by_picture/output_images_plates"
 os.makedirs(cropped_output_directory, exist_ok=True)
 
 # Create windows for displaying images

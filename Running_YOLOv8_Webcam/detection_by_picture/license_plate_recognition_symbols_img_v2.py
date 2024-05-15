@@ -3,7 +3,7 @@ from ultralytics import YOLO
 import cv2
 import easyocr
 import os
-import Preprocess  # Import Preprocess module
+import Preprocess  
 
 # Update the path to your YOLO license plate detection model
 model_yolo = YOLO("../YOLO-Weights/license_plate_detector.pt")
@@ -22,7 +22,7 @@ output_directory = "./Running_YOLOv8_Webcam/detection_by_picture/output_images_p
 os.makedirs(output_directory, exist_ok=True)
 
 # Output directory for saving cropped images
-cropped_output_directory = "./Running_YOLOv8_Webcam/detection_by_picture/output_cropped_images_plates"
+cropped_output_directory = "./Running_YOLOv8_Webcam/detection_by_picture/output_images_plates"
 os.makedirs(cropped_output_directory, exist_ok=True)
 
 # Create windows for displaying images
