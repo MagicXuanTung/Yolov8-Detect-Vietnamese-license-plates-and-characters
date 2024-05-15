@@ -18,7 +18,7 @@ image_directory = "./Running_YOLOv8_Webcam/detection_by_picture/input_images_lic
 output_directory = "./Running_YOLOv8_Webcam/detection_by_picture/output_images_plates"
 os.makedirs(output_directory, exist_ok=True)
 
-# (cologrey)
+# (color)
 cropped_output_directory_color = "./Running_YOLOv8_Webcam/detection_by_picture/output_cropped_images_plates_color"
 os.makedirs(cropped_output_directory_color, exist_ok=True)
 
@@ -30,6 +30,7 @@ os.makedirs(cropped_output_directory_bw, exist_ok=True)
 cropped_images_plates_canny = "./Running_YOLOv8_Webcam/detection_by_picture/output_cropped_images_plates_canny"
 os.makedirs(cropped_images_plates_canny, exist_ok=True)
 
+# Contours
 cropped_images_plates_contours = "./Running_YOLOv8_Webcam/detection_by_picture/output_cropped_images_plates_contours"
 os.makedirs(cropped_images_plates_contours, exist_ok=True)
 
@@ -104,12 +105,12 @@ while current_image_index < len(image_filenames):
                 # cv2.imshow("Rotated Image", rotated_img)
 
                 # # SHOW THE CROPPED IMAGE NORMAL COLOR
-                # cv2.namedWindow(
-                #     f"Color {cropped_images_count + 1}", cv2.WINDOW_AUTOSIZE)
-                # cv2.resizeWindow(
-                #     f"Color {cropped_images_count + 1}", 640, 360)
-                # cv2.imshow(
-                #     f"Color {cropped_images_count + 1}", cropped_img)
+                cv2.namedWindow(
+                    f"Color {cropped_images_count + 1}", cv2.WINDOW_AUTOSIZE)
+                cv2.resizeWindow(
+                    f"Color {cropped_images_count + 1}", 640, 360)
+                cv2.imshow(
+                    f"Color {cropped_images_count + 1}", cropped_img)
 
                 # Save the cropped image (cologrey)
                 cropped_output_filename_color = os.path.join(
@@ -174,7 +175,7 @@ while current_image_index < len(image_filenames):
                 cv2.resizeWindow(
                     f"Canny edge {cropped_images_count + 1}", 640, 360)
                 cv2.imshow(
-                    f"Canny edge {cropped_images_count + 1}", canny_plate,)
+                    f"Canny edge {cropped_images_count + 1}", canny_plate)
 
                 results = reader.readtext(canny_plate)
 
@@ -198,51 +199,47 @@ while current_image_index < len(image_filenames):
 
                 # CONTOUR IMAGE
                 # Convert ảnh cropped_img sang ảnh grayscale
-                # gray_cropped_img = cv2.cvtColor(
-                #     cropped_img, cv2.COLOR_BGR2GRAY)
+                gray_cropped_img = cv2.cvtColor(
+                    cropped_img, cv2.COLOR_BGR2GRAY)
 
-                # # Áp dụng canny edge detection để phát hiện biên
-                # canny_plate_1 = cv2.Canny(gray_cropped_img, 250, 255)
+                # Dilate để tăng độ dày của các đường biên phát hiện được
+                kernel = np.ones((1, 1), np.uint8)
+                dilated_canny_plate = cv2.dilate(
+                    canny_plate, kernel, iterations=1)
 
-                # # Dilate để tăng độ dày của các đường biên phát hiện được
-                # kernel = np.ones((1, 1), np.uint8)
-                # dilated_canny_plate = cv2.dilate(
-                #     canny_plate_1, kernel, iterations=1)
+                # Tìm các contour trong ảnh đã xử lý
+                contours, hierarchy = cv2.findContours(
+                    dilated_canny_plate, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
 
-                # # Tìm các contour trong ảnh đã xử lý
-                # contours, hierarchy = cv2.findContours(
-                #     dilated_canny_plate, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+                # Vẽ contour lên ảnh gốc để kiểm tra
+                cv2.drawContours(cropped_img, contours, -1, (0, 255, 255), 1)
 
-                # # Vẽ contour lên ảnh gốc để kiểm tra
-                # cv2.drawContours(cropped_img, contours, -1, (0, 255, 255), 1)
+                # Hiển thị ảnh với contour
+                cv2.namedWindow(
+                    f"Contours {cropped_images_count + 1}", cv2.WINDOW_AUTOSIZE)
+                cv2.resizeWindow(
+                    f"Contours {cropped_images_count + 1}", 640, 360)
+                cv2.imshow(
+                    f"Contours {cropped_images_count + 1}", cropped_img,)
 
-                # # Hiển thị ảnh với contour
-                # cv2.namedWindow(
-                #     f"Contours {cropped_images_count + 1}", cv2.WINDOW_AUTOSIZE)
-                # cv2.resizeWindow(
-                #     f"Contours {cropped_images_count + 1}", 640, 360)
-                # cv2.imshow(
-                #     f"Contours {cropped_images_count + 1}", cropped_img,)
+                results = reader.readtext(cropped_img)
+                # Extract license plate text from EasyOCR results
+                license_plate_text = ""
+                for res in results:
+                    text = res[1]
+                    # Check if each character in the recognized text is valid
+                    license_plate_text_valid = "".join(
+                        [char if char in valid_characters else "." for char in text])
+                    license_plate_text += license_plate_text_valid + "\n"
 
-                # results = reader.readtext(cropped_img)
+                # Save the preprocessed image (contour)
+                cropped_output_filename_plates_contours = os.path.join(
+                    cropped_images_plates_contours, f'{image_filename}_cropped_{i+1}-{j+1}_{cropped_images_count + 1}.jpg')
+                cv2.imwrite(cropped_output_filename_plates_contours,
+                            cropped_img)
 
-                # # Extract license plate text from EasyOCR results
-                # license_plate_text = ""
-                # for res in results:
-                #     text = res[1]
-                #     # Check if each character in the recognized text is valid
-                #     license_plate_text_valid = "".join(
-                #         [char if char in valid_characters else "." for char in text])
-                #     license_plate_text += license_plate_text_valid + "\n"
-
-                # # Save the preprocessed image (contour)
-                # cropped_output_filename_plates_contours = os.path.join(
-                #     cropped_images_plates_contours, f'{image_filename}_cropped_{i+1}-{j+1}_{cropped_images_count + 1}.jpg')
-                # cv2.imwrite(cropped_output_filename_plates_contours,
-                #             cropped_img)
-
-                # # Print the license plate text to the console
-                # print(f"Contours:\n{license_plate_text}")
+                # Print the license plate text to the console
+                print(f"Contours:\n{license_plate_text}")
 
                 # Increment the cropped images count
                 cropped_images_count += 1
