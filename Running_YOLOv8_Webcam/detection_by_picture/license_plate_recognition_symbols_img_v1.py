@@ -10,7 +10,7 @@ model_yolo = YOLO("../YOLO-Weights/license_plate_detector.pt")
 classNames = ["license_plate"]
 
 # Initialize EasyOCR with the desired language (replace 'en' with the appropriate language code)
-reader = easyocr.Reader(['vi'])
+reader = easyocr.Reader(['en'])
 
 # Directory containing the images for license plate detection
 image_directory = "./Running_YOLOv8_Webcam/detection_by_picture/input_images_license_plate/"
@@ -44,12 +44,14 @@ for image_filename in os.listdir(image_directory):
             # Check if the detected object is a license plate
             cls = int(box.cls[0])
             if classNames[cls] == "license_plate":
-                color = (255, 0, 255)  # Magenta color for both bounding box and text
+                # Magenta color for both bounding box and text
+                color = (255, 0, 255)
 
                 cv2.rectangle(img, (x1, y1), (x2, y2), color, 3)
 
                 # Define the coordinates for cropping the image
-                crop_x1 = max(0, x1 - 10)  # Adjust the values to include some margin around the bounding box
+                # Adjust the values to include some margin around the bounding box
+                crop_x1 = max(0, x1 - 10)
                 crop_y1 = max(0, y1 - 10)
                 crop_x2 = min(img.shape[1], x2 + 10)
                 crop_y2 = min(img.shape[0], y2 + 10)
@@ -61,7 +63,8 @@ for image_filename in os.listdir(image_directory):
                 cv2.imshow("Cropped Image", cropped_img)
 
                 # Save the cropped image
-                cropped_output_filename = os.path.join(cropped_output_directory, f'{image_filename}_cropped.jpg')
+                cropped_output_filename = os.path.join(
+                    cropped_output_directory, f'{image_filename}_cropped.jpg')
                 cv2.imwrite(cropped_output_filename, cropped_img)
 
                 # Perform OCR on the cropped license plate region
@@ -69,7 +72,8 @@ for image_filename in os.listdir(image_directory):
 
                 if results_ocr:
                     # Concatenate lines of the license plate text into a single string
-                    license_plate_text = ' '.join(result[1] for result in results_ocr)
+                    license_plate_text = ' '.join(
+                        result[1] for result in results_ocr)
 
                     # Display the entire license plate text on a single line
                     cv2.putText(img, f'License Plate: {license_plate_text}', (x1, y1 - 20),
@@ -84,7 +88,8 @@ for image_filename in os.listdir(image_directory):
         break
 
     # Save the image with license plate information
-    output_filename = os.path.join(output_directory, f'{image_filename}_output.jpg')
+    output_filename = os.path.join(
+        output_directory, f'{image_filename}_output.jpg')
     cv2.imwrite(output_filename, img)
 
 cv2.destroyAllWindows()

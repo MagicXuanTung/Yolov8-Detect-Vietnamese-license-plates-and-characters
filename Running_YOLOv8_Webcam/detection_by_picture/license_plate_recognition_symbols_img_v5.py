@@ -6,7 +6,7 @@ from ultralytics import YOLO
 import Preprocess
 
 # Update the path to your YOLO license plate detection model
-model_yolo = YOLO("../YOLO-Weights/license_ plates.pt")
+model_yolo = YOLO("../YOLO-Weights/license_plate_detector.pt")
 
 # Update class name for license plate
 classNames = ["license_plate"]

@@ -4,14 +4,13 @@ import easyocr
 import os
 
 # Update the path to your YOLO license plate detection model
-model_yolo = YOLO("../YOLO-Weights/best.pt")
+model_yolo = YOLO("../YOLO-Weights/license_plate_detector.pt")
 
 # Update class name for license plate
-classNames = {0: '0', 1: '1', 2: '2', 3: '3', 4: '4', 5: '5', 6: '6', 7: '7', 8: '8', 9: '9', 10: 'A', 11: 'B', 12: 'C', 13: 'D', 14: 'E', 15: 'F',
-              16: 'G', 17: 'H', 18: 'J', 19: 'K', 20: 'L', 21: 'M', 22: 'N', 23: 'P', 24: 'R', 25: 'S', 26: 'T', 27: 'U', 28: 'V', 29: 'X', 30: 'Y', 31: 'Z'}
+classNames = ["license_plate"]
 
 # Initialize EasyOCR with the desired language (replace 'en' with the appropriate language code)
-reader = easyocr.Reader(['vi'])
+reader = easyocr.Reader(['en'])
 
 # Directory containing the images for license plate detection
 image_directory = "./Running_YOLOv8_Webcam/detection_by_picture/input_images_license_plate/"
@@ -43,10 +42,9 @@ for image_filename in os.listdir(image_directory):
                 cv2.rectangle(img, (x1, y1), (x2, y2), color, 3)
 
                 # Crop the license plate region
-                plate_region = img[y1:y2, x1:x2]
 
                 # Perform OCR on the license plate region
-                results_ocr = reader.readtext(plate_region)
+                results_ocr = reader.readtext(img)
 
                 if results_ocr:
                     # Concatenate lines of the license plate text into a single string

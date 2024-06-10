@@ -4,6 +4,9 @@ import shutil
 # Original image directory
 output_directory = "./Running_YOLOv8_Webcam/detection_by_picture/output_images_plates"
 
+# Cropped
+output_images_plates_cropped = "./Running_YOLOv8_Webcam/detection_by_picture/output_images_plates_cropped"
+
 # (color)
 cropped_output_directory_color = "./Running_YOLOv8_Webcam/detection_by_picture/output_cropped_images_plates_color"
 
@@ -16,9 +19,11 @@ cropped_images_plates_canny = "./Running_YOLOv8_Webcam/detection_by_picture/outp
 # Contours
 cropped_images_plates_contours = "./Running_YOLOv8_Webcam/detection_by_picture/output_cropped_images_plates_contours"
 
+# character_detector
+output_directory_character_detector = "./Running_YOLOv8_Webcam/detection_by_picture/output_character_detector/"
 # List of directories
-directories = [output_directory, cropped_output_directory_color, cropped_output_directory_bw,
-               cropped_images_plates_canny, cropped_images_plates_contours]
+directories = [output_directory, output_images_plates_cropped, cropped_output_directory_color, cropped_output_directory_bw,
+               cropped_images_plates_canny, cropped_images_plates_contours, output_directory_character_detector]
 
 # Empty all directories
 for directory in directories:

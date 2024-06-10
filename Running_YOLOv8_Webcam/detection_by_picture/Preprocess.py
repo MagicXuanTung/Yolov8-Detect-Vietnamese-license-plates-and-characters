@@ -1,8 +1,6 @@
 # Preprocess.py
-
 import cv2
 import numpy as np
-import math
 
 # module level variables ##########################################################################
 GAUSSIAN_SMOOTH_FILTER_SIZE = (5, 5)  # kích cỡ càng to thì càng mờ
@@ -25,7 +23,7 @@ def preprocess(imgOriginal):
 
     imgBlurred = np.zeros((height, width, 1), np.uint8)
     imgBlurred = cv2.GaussianBlur(
-        imgMaxContrastGrayscale, GAUSSIAN_SMOOTH_FILTER_SIZE, 100)
+        imgMaxContrastGrayscale, GAUSSIAN_SMOOTH_FILTER_SIZE, 500)
     # cv2.imwrite("gauss.jpg",imgBlurred)
     # Làm mịn ảnh bằng bộ lọc Gauss 5x5, sigma = 0
 

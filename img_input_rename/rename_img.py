@@ -29,8 +29,8 @@ def rename_files(input_directory, output_directory):
 
 
 # Specify input and output directories
-input_directory = r'D:\AI_SERVER_DETECTED_IMG\img_input_rename\img'
-output_directory = r'D:\AI_SERVER_DETECTED_IMG\Running_YOLOv8_Webcam\detection_by_picture\input_images_license_plate'
+input_directory = r'D:\Yolov8-Detect-Vietnamese-license-plates-and-characters\img_input_rename\img'
+output_directory = r'D:\Yolov8-Detect-Vietnamese-license-plates-and-characters\Running_YOLOv8_Webcam\detection_by_picture\input_images_license_plate'
 
 # Call the function with input and output directories
 rename_files(input_directory, output_directory)
