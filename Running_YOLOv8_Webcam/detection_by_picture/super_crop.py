@@ -5,7 +5,6 @@ from ultralytics import YOLO
 import os
 import imutils
 import easyocr
-import pytesseract
 
 model_yolo = YOLO("../YOLO-Weights/license_plate_detector.pt")
 
@@ -233,18 +232,6 @@ for filename in os.listdir(directory_path):
                             combined_text = ''.join(cleaned_text_lines)
 
                             print("Text detected EASYOCR:", combined_text)
-
-                            #################################
-                            #  TESSERACT OCR
-                            custom_config = r'--oem 3 --psm 7'
-                            detected_text = pytesseract.image_to_string(
-                                white_image_with_text, config=custom_config)
-
-                            # Xóa tất cả các khoảng trắng và ký tự xuống dòng từ kết quả
-                            detected_text = detected_text.replace(
-                                ' ', '').replace('\n', '')
-
-                            print("Text detected TESSERACT:", detected_text)
 
                 cv2.waitKey(0)
                 cv2.destroyAllWindows()

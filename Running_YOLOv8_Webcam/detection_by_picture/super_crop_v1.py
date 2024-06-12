@@ -9,8 +9,7 @@ model_yolo = YOLO("../YOLO-Weights/license_plate_detector.pt")
 model_yolo2 = YOLO("../YOLO-Weights/character_detector.pt")
 classNames2 = {
     0: '0', 1: '1', 2: '2', 3: '3', 4: '4', 5: '5', 6: '6', 7: '7', 8: '8', 9: '9', 10: 'A', 11: 'B', 12: 'C', 13: 'D', 14: 'E', 15: 'F', 16: 'G',
-    17: 'H', 18: 'K', 19: 'L', 20: 'M', 21: 'N', 22: 'P', 23: 'R', 24: 'S', 25: 'T', 26: 'U', 27: 'V', 28: 'X', 29: 'Y', 30: 'Z', 31: 'license plates'
-}
+    17: 'H', 18: 'K', 19: 'L', 20: 'M', 21: 'N', 22: 'P', 23: 'R', 24: 'S', 25: 'T', 26: 'U', 27: 'V', 28: 'X', 29: 'Y', 30: 'Z'}
 
 directory_path = "./Running_YOLOv8_Webcam/detection_by_picture/input_images_license_plate/"
 
@@ -20,6 +19,9 @@ os.makedirs(output_directory, exist_ok=True)
 output_directory_character_detector = "./Running_YOLOv8_Webcam/detection_by_picture/output_character_detector/"
 os.makedirs(output_directory_character_detector, exist_ok=True)
 
+output_images_plates_cropped = "./Running_YOLOv8_Webcam/detection_by_picture/output_images_plates_cropped"
+os.makedirs(output_images_plates_cropped, exist_ok=True)
+
 
 def detect_and_crop(image, model):
     results = model(image)
@@ -28,9 +30,7 @@ def detect_and_crop(image, model):
         crops = []
         for detection in detections:
             x1, y1, x2, y2 = map(int, detection.xyxy[0])
-
             cropped_img = image[y1:y2, x1:x2]
-            print("crop lần 1")
             crops.append((cropped_img, (x1, y1, x2, y2)))
         return crops
     return []
@@ -55,18 +55,18 @@ for filename in os.listdir(directory_path):
 
         for crop_1, bbox_1 in crops_1:
             crop_1_resized = cv2.resize(crop_1, (620, 480))
-            # cv2.imshow("crop_1_resized", crop_1_resized)
+
             # Second detection and crop
             crops_2 = detect_and_crop(crop_1_resized, model_yolo)
             if not crops_2:
-                print("crop lần 2")
+                print("crop lần 2 lỗi")
                 continue
 
             for crop_2, bbox_2 in crops_2:
                 # Third detection and crop
                 crops_3 = detect_and_crop(crop_2, model_yolo)
                 if not crops_3:
-                    print("crop lần 3 ")
+                    print("crop lần 3 lỗi ")
                     continue
 
                 for crop_3, bbox_3 in crops_3:
@@ -75,14 +75,21 @@ for filename in os.listdir(directory_path):
                     crops_4 = detect_and_crop(crop_3, model_yolo)
 
                     if not crops_4:
-                        print("crop lần 4")
+                        print("crop lần 4 lỗi")
+
                         continue
 
                     for crop_4, bbox_4 in crops_4:
-
-                        cv2.namedWindow("crop_4", cv2.WINDOW_NORMAL)
-                        cv2.resizeWindow("crop_4", 620, 480)
-                        cv2.imshow("crop_4", crop_4)
+                        gray = cv2.cvtColor(crop_4, cv2.COLOR_BGR2GRAY)
+                        bilateralFilter = cv2.bilateralFilter(
+                            gray, 1, 10, 10)
+                        output_filename = os.path.join(
+                            output_images_plates_cropped, f'{os.path.splitext(filename)[0]}_.jpg')
+                        cv2.imwrite(output_filename, bilateralFilter)
+                        cv2.namedWindow("original_img_got_crop",
+                                        cv2.WINDOW_NORMAL)
+                        cv2.resizeWindow("original_img_got_crop", 620, 480)
+                        cv2.imshow("original_img_got_crop", crop_4)
 
                         gray = cv2.cvtColor(crop_4, cv2.COLOR_BGR2GRAY)
                         bilateralFilter = cv2.bilateralFilter(
@@ -189,52 +196,41 @@ for filename in os.listdir(directory_path):
                                 class_id = int(result.cls)
                                 class_name = classNames2[class_id]
 
-                                # Update min-max coordinates
-                                # min_x = min(min_x, x1, x2)
-                                # max_x = max(max_x, x1, x2)
-                                # min_y = min(min_y, y1, y2)
-                                # max_y = max(max_y, y1, y2)
-
                                 cv2.rectangle(thresh_image, (x1, y1),
                                               (x2, y2), (255, 0, 255), 1)
-                                # cv2.circle(
-                                #     thresh_image, (min_x, min_y), 5, (0, 255, 0), -1)
-                                # cv2.circle(
-                                #     thresh_image, (max_x, max_y), 5, (0, 255, 0), -1)
 
                                 text_x = x1 + 5
                                 text_y = y1 + 20
                                 contour_index += 1
-
+                                # kết quả nhận diện ký tự của model_yolo2
                                 cv2.putText(thresh_image, class_name, (text_x, text_y),
-                                            cv2.FONT_HERSHEY_SIMPLEX, 0.8, (255, 0, 255), 1)
+                                            cv2.FONT_HERSHEY_SIMPLEX, 0.8, (255, 0, 255), 2)
 
-                                cv2.putText(thresh_image, str(contour_index), (x1, y1 + 25),
-                                            cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 255, 255), 1)
-
-                                # Store class name and its position
-                                # texts.append((class_name, text_x, text_y))
+                                # hiển thị trình tự thứ tự index detect boundingbox của model_yolo2
+                                # cv2.putText(thresh_image, str(contour_index), (x1, y1 + 25),
+                                #             cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 255), 1)
 
                             lineUp.sort(key=sortByXmin)
                             for char in lineUp:
                                 textPlatelices += classNames2[int(char.cls)]
 
                             if len(lineDown) > 0:
-                                textPlatelices += " -- "
+                                textPlatelices += ""
 
                                 lineDown.sort(key=sortByXmin)
                                 for char in lineDown:
                                     textPlatelices += classNames2[int(char.cls)]
-
-                            cv2.putText(thresh_image, textPlatelices, (10, 30),
-                                        cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 255, 255), 1)
-
+                            # Kết quả cuối cùng
+                            # cv2.putText(crop_4, textPlatelices, (15, 45),
+                            #             cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 0), 2)
+                            print(
+                                f"Result license plate number: {textPlatelices}")
                             output_filename = os.path.join(
                                 output_directory_character_detector, f'{os.path.splitext(filename)[0]}_thresh.jpg')
-                            cv2.imwrite(output_filename, thresh_image)
-                            cv2.namedWindow("thresh Image", cv2.WINDOW_NORMAL)
-                            cv2.resizeWindow("thresh Image", 620, 480)
-                            cv2.imshow('thresh Image', thresh_image)
+                            cv2.imwrite(output_filename, crop_4)
+                            cv2.namedWindow("Final_Result", cv2.WINDOW_NORMAL)
+                            cv2.resizeWindow("Final_Result", 620, 480)
+                            cv2.imshow('Final_Result', crop_4)
 
                 cv2.waitKey(0)
                 cv2.destroyAllWindows()
