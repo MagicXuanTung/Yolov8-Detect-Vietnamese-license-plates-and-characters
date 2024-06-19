@@ -63,7 +63,7 @@ original_img got crop_detect ( license_plate_detector.pt )
 Image got detect and transform:
 ![alt text](<image_got_transform_and got_detect.jpg>)
 
-Final_result
+Final result:
 ![alt text](Final_result.jpg)
 
 Bonus:
