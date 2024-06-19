@@ -22,6 +22,9 @@ os.makedirs(output_directory_character_detector, exist_ok=True)
 output_images_plates_cropped = "./Running_YOLOv8_Webcam/detection_by_picture/output_images_plates_cropped"
 os.makedirs(output_images_plates_cropped, exist_ok=True)
 
+cropped_output_directory_bw = "./Running_YOLOv8_Webcam/detection_by_picture/output_cropped_images_plates_bw"
+os.makedirs(cropped_output_directory_bw, exist_ok=True)
+
 
 def detect_and_crop(image, model):
     results = model(image)
@@ -80,22 +83,28 @@ for filename in os.listdir(directory_path):
                         continue
 
                     for crop_4, bbox_4 in crops_4:
-                        gray = cv2.cvtColor(crop_4, cv2.COLOR_BGR2GRAY)
-                        bilateralFilter = cv2.bilateralFilter(
-                            gray, 1, 10, 10)
+
                         output_filename = os.path.join(
-                            output_images_plates_cropped, f'{os.path.splitext(filename)[0]}_.jpg')
-                        cv2.imwrite(output_filename, bilateralFilter)
-                        cv2.namedWindow("original_img_got_crop",
+                            output_images_plates_cropped, f'{os.path.splitext(filename)[0]}_cropped.jpg')
+                        cv2.imwrite(output_filename, crop_4)
+                        cv2.namedWindow("original_img_crop",
                                         cv2.WINDOW_NORMAL)
-                        cv2.resizeWindow("original_img_got_crop", 620, 480)
-                        cv2.imshow("original_img_got_crop", crop_4)
+                        cv2.resizeWindow("original_img_crop", 620, 480)
+                        cv2.imshow("original_img_crop", crop_4)
 
                         gray = cv2.cvtColor(crop_4, cv2.COLOR_BGR2GRAY)
                         bilateralFilter = cv2.bilateralFilter(
                             gray, 1, 10, 10)
                         _, thresh = cv2.threshold(
-                            bilateralFilter, 155, 200, cv2.THRESH_BINARY)
+                            bilateralFilter, 170, 180, cv2.THRESH_BINARY)
+                        output_filename = os.path.join(
+                            cropped_output_directory_bw, f'{os.path.splitext(filename)[0]}_thresh.jpg')
+                        cv2.imwrite(output_filename, thresh)
+                        cv2.namedWindow("thresh",
+                                        cv2.WINDOW_NORMAL)
+                        cv2.resizeWindow("thresh", 620, 480)
+                        cv2.imshow("thresh", thresh)
+
                         edged = cv2.Canny(thresh, 100, 150)
                         kernel = np.ones((3, 3), np.uint8)
                         dilated_canny_plate = cv2.dilate(
@@ -163,14 +172,12 @@ for filename in os.listdir(directory_path):
                                 gray, 1, 10, 10)
                             _, thresh = cv2.threshold(
                                 bilateralFilter, 145, 170, cv2.THRESH_BINARY)
-                            img_resize = cv2.resize(thresh, (620, 480))
-                            output_thresh_filename = os.path.join(
-                                output_directory, f'{os.path.splitext(filename)[0]}_thresh.jpg')
-                            cv2.imwrite(output_thresh_filename, img_resize)
 
-                            thresh_image = cv2.imread(output_thresh_filename)
+                            bgr = cv2.cvtColor(
+                                thresh, cv2.COLOR_GRAY2BGR)
+                            bgr_resized = cv2.resize(bgr, (620, 480))
 
-                            results = model_yolo2(thresh_image)
+                            results = model_yolo2(bgr_resized)
 
                             texts = []
 
@@ -179,7 +186,7 @@ for filename in os.listdir(directory_path):
                             lineDown = []
 
                             # midle height
-                            midHeight = 480 / 2
+                            midHeight = 480 / 4
 
                             contour_index = 0
                             textPlatelices = ""
@@ -196,19 +203,26 @@ for filename in os.listdir(directory_path):
                                 class_id = int(result.cls)
                                 class_name = classNames2[class_id]
 
-                                cv2.rectangle(thresh_image, (x1, y1),
+                                cv2.rectangle(bgr_resized, (x1, y1),
                                               (x2, y2), (255, 0, 255), 1)
 
                                 text_x = x1 + 5
                                 text_y = y1 + 20
                                 contour_index += 1
                                 # kết quả nhận diện ký tự của model_yolo2
-                                cv2.putText(thresh_image, class_name, (text_x, text_y),
-                                            cv2.FONT_HERSHEY_SIMPLEX, 0.8, (255, 0, 255), 2)
+                                cv2.putText(bgr_resized, class_name, (text_x, text_y),
+                                            cv2.FONT_HERSHEY_SIMPLEX, 0.8, (255, 255, 0), 2)
 
                                 # hiển thị trình tự thứ tự index detect boundingbox của model_yolo2
                                 # cv2.putText(thresh_image, str(contour_index), (x1, y1 + 25),
-                                #             cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 255), 1)
+                                #             cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 1)
+                                output_filename = os.path.join(
+                                    output_directory, f'{os.path.splitext(filename)[0]}_output_after_transform.jpg')
+                            cv2.imwrite(output_filename, bgr_resized)
+                            cv2.namedWindow("bgr_resized Image",
+                                            cv2.WINDOW_NORMAL)
+                            cv2.resizeWindow("bgr_resized Image", 620, 480)
+                            cv2.imshow('bgr_resized Image', bgr_resized)
 
                             lineUp.sort(key=sortByXmin)
                             for char in lineUp:
@@ -221,16 +235,17 @@ for filename in os.listdir(directory_path):
                                 for char in lineDown:
                                     textPlatelices += classNames2[int(char.cls)]
                             # Kết quả cuối cùng
-                            # cv2.putText(crop_4, textPlatelices, (15, 45),
-                            #             cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 0), 2)
+                            cv2.putText(img, textPlatelices, (15, 45),
+                                        cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 0), 2)
                             print(
                                 f"Result license plate number: {textPlatelices}")
+
                             output_filename = os.path.join(
-                                output_directory_character_detector, f'{os.path.splitext(filename)[0]}_thresh.jpg')
-                            cv2.imwrite(output_filename, crop_4)
+                                output_directory_character_detector, f'{os.path.splitext(filename)[0]}_character_detect.jpg')
+                            cv2.imwrite(output_filename, img)
                             cv2.namedWindow("Final_Result", cv2.WINDOW_NORMAL)
                             cv2.resizeWindow("Final_Result", 620, 480)
-                            cv2.imshow('Final_Result', crop_4)
+                            cv2.imshow('Final_Result', img)
 
                 cv2.waitKey(0)
                 cv2.destroyAllWindows()

@@ -21,6 +21,7 @@ cropped_images_plates_contours = "./Running_YOLOv8_Webcam/detection_by_picture/o
 
 # character_detector
 output_directory_character_detector = "./Running_YOLOv8_Webcam/detection_by_picture/output_character_detector/"
+
 # List of directories
 directories = [output_directory, output_images_plates_cropped, cropped_output_directory_color, cropped_output_directory_bw,
                cropped_images_plates_canny, cropped_images_plates_contours, output_directory_character_detector]
