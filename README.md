@@ -25,10 +25,6 @@ Preprocess.py:
 
 ![alt text](imgGrayscalePlusTopHatMinusBlackHat.jpg)
 
-Original img: with eacyocr
-
-![alt text](<Running_YOLOv8_Webcam/detection_by_picture/ảnh Chuẩn/1.jpg>)
-
 Start detection
 Color img :
 
