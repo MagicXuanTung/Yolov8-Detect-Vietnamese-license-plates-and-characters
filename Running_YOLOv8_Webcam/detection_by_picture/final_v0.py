@@ -79,9 +79,9 @@ for filename in os.listdir(directory_path):
 
                     for crop_4, bbox_4 in crops_4:
 
-                        cv2.namedWindow("crop_4", cv2.WINDOW_NORMAL)
-                        cv2.resizeWindow("crop_4", 620, 480)
-                        cv2.imshow("crop_4", crop_4)
+                        cv2.namedWindow("original_img_crop", cv2.WINDOW_NORMAL)
+                        cv2.resizeWindow("original_img_crop", 620, 480)
+                        cv2.imshow("original_img_crop", crop_4)
 
                         gray = cv2.cvtColor(crop_4, cv2.COLOR_BGR2GRAY)
                         bilateralFilter = cv2.bilateralFilter(
@@ -155,14 +155,12 @@ for filename in os.listdir(directory_path):
                                 gray, 1, 10, 10)
                             _, thresh = cv2.threshold(
                                 bilateralFilter, 145, 170, cv2.THRESH_BINARY)
-                            img_resize = cv2.resize(thresh, (620, 480))
-                            output_thresh_filename = os.path.join(
-                                output_directory, f'{os.path.splitext(filename)[0]}_thresh.jpg')
-                            cv2.imwrite(output_thresh_filename, img_resize)
 
-                            thresh_image = cv2.imread(output_thresh_filename)
+                            bgr = cv2.cvtColor(
+                                thresh, cv2.COLOR_GRAY2BGR)
+                            bgr_resized = cv2.resize(bgr, (620, 480))
 
-                            results = model_yolo2(thresh_image)
+                            results = model_yolo2(bgr_resized)
 
                             texts = []
 
@@ -171,27 +169,30 @@ for filename in os.listdir(directory_path):
                                 x1, y1, x2, y2 = map(int, result.xyxy[0])
                                 class_id = int(result.cls)
                                 class_name = classNames2[class_id]
-                                cv2.rectangle(thresh_image, (x1, y1),
+                                cv2.rectangle(bgr_resized, (x1, y1),
                                               (x2, y2), (255, 0, 255), 1)
 
                                 text_x = x1 + 5
                                 text_y = y1 + 20
 
-                                cv2.putText(thresh_image, class_name, (text_x, text_y),
-                                            cv2.FONT_HERSHEY_SIMPLEX, 0.8, (255, 0, 255), 1)
+                                cv2.putText(bgr_resized, class_name, (text_x, text_y),
+                                            cv2.FONT_HERSHEY_SIMPLEX, 0.8, (255, 255, 0), 2)
 
                                 # Store class name and its position
                                 texts.append((class_name, text_x, text_y))
 
                             output_filename = os.path.join(
                                 output_directory_character_detector, f'{os.path.splitext(filename)[0]}_thresh.jpg')
-                            cv2.imwrite(output_filename, thresh_image)
-                            cv2.namedWindow("thresh Image", cv2.WINDOW_NORMAL)
-                            cv2.resizeWindow("thresh Image", 620, 480)
-                            cv2.imshow('thresh Image', thresh_image)
+                            cv2.imwrite(output_filename, bgr_resized)
+                            cv2.namedWindow(
+                                "character_detector Image", cv2.WINDOW_NORMAL)
+                            cv2.resizeWindow(
+                                "character_detector Image", 620, 480)
+                            cv2.imshow(
+                                'character_detector Image', bgr_resized)
 
                             # Create a new white image
-                            custom_font_path = r"D:\Yolov8-Detect-Vietnamese-license-plates-and-characters\Soxe2banh.TTF"
+                            custom_font_path = r"D:\Yolov8-Detect-Vietnamese-license-plates-and-characters\font_bien_so_xe_vn.TTF"
                             font = ImageFont.truetype(custom_font_path, 170)
 
                             # Create a new white image
@@ -217,7 +218,8 @@ for filename in os.listdir(directory_path):
                             output_filename = os.path.join(
                                 output_directory, f'{os.path.splitext(filename)[0]}_white_image.jpg')
                             cv2.imwrite(output_filename, white_image_with_text)
-                            cv2.imshow('White Image', white_image_with_text)
+                            cv2.imshow('Final_Result Image',
+                                       white_image_with_text)
                             ###########################
                             #  EASYOCR
                             results_ocr = reader.readtext(
