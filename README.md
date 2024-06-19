@@ -7,13 +7,13 @@ Setup for project
 
 pip install -r requirements.txt
 
-ultralytics
+ultralytics==8.2.28
+opencv-python==4.10.0
+easyocr==1.7.1
+numpy==1.24.4
+Pillow==10.3.0
+imutils==0.5.4
 
-opencv-python
-
-easyoc
-
-numpy
 
 4. ultralytics (The YOLO model is used to detect the location of objects in an image and return bounding boxes for each object)
 5. opencv-python (OpenCV is used to read, process and display images)
