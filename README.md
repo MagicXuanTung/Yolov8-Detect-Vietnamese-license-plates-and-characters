@@ -15,9 +15,12 @@ Pillow==10.3.0
 imutils==0.5.4
 
 
-4. ultralytics (The YOLO model is used to detect the location of objects in an image and return bounding boxes for each object)
-5. opencv-python (OpenCV is used to read, process and display images)
-6. easyocr (Use EasyOCR to read text on license plates)
+- ultralytics (The YOLO model is used to detect the location of objects in an image and return bounding boxes for each object)
+- opencv-python (OpenCV is used to read, process and display images)
+- easyocr (Use EasyOCR to read text on license plates)
+- numpy (Used for numerical computations and data handling related to image processing, including array operations, linear algebra, etc)
+- Pillow (Provides tools to open, manipulate, and save images, necessary for preprocessing images before license plate recognition)
+- imutils (Provides convenient functions for image processing tasks like resizing, rotating, cropping, and other transformations)
 
 • Detection license_plate_recognition_symbols
 
