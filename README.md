@@ -48,6 +48,7 @@ Font text License plate Vietnamese:
 ![alt text](font_bien_so_xe_vn.png)
 
 final_v0 (detect-character-by-model + final_result_by EASY OCR)
+
 final_v1 (detect-character-by-model "character_detector.pt")
 
 original_image
